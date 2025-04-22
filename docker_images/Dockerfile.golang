@@ -1,0 +1,18 @@
+# we will do a multistage build for golang to reduce the file size.
+# we will do static linking and create exe and move the exe to scratch and then execute so that scratch has only the exe (small size)
+FROM golang:tip-alpine3.21 AS basebuild
+# /app will be our working directory
+WORKDIR /app  
+COPY ../go-pgsql-app/. ./ 
+## writing the command in same line to make sure there is only 1 layer to run both the command in overlay fs
+# RUN go mod tidy 
+# CGO_ENABLED=0 for static linking , GOOS — Target Operating System , GOARCH — Target CPU Architecture
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o godocker .
+
+# for multistage build i use scratch( clean slate)
+FROM scratch
+WORKDIR /app
+# i am copying the base exe from golang to our scratch container
+COPY --from=basebuild /app/godocker ./
+
+# now we have a scractch image 
