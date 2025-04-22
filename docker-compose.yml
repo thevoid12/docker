@@ -13,6 +13,10 @@ services:
       - pg_data:/var/lib/postgresql/data # Mount the named volume pg_data into the container at /var/lib/postgresql/data, which is where PostgreSQL stores all of its database files.
     ports:
       - "15432:5432" # Exposing port to access it externally <host_port>:<container_port>
+  golang:
+    image: godocker:v1 # this is a image which i built from Dockerfile.golang
+    container_name: godocker_test
+
 volumes:
   pg_data:
     # we are telling Docker to mount pg_data at that path, but you're not saying what pg_data is 
