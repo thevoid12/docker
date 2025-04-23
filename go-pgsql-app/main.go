@@ -56,7 +56,7 @@ func main() {
 			c.String(http.StatusInternalServerError, "DB Error: %v", err)
 			return
 		}
-
+		date = time.Now()
 		c.HTML(http.StatusOK, "index", PageData{
 			Message:   "Hello, World",
 			TodayDate: date,

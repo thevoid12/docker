@@ -14,8 +14,10 @@ services:
     ports:
       - "15432:5432" # Exposing port to access it externally <host_port>:<container_port>
   golang:
-    image: godocker:v1 # this is a image which i built from Dockerfile.golang
+    image: godocker:v7 # this is a image which i built from Dockerfile.golang
     container_name: godocker_test
+    ports:
+      - "8080:8080"
 
 volumes:
   pg_data:

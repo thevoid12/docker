@@ -4,6 +4,7 @@ FROM golang:tip-alpine3.21 AS basebuild
 # /app will be our working directory
 WORKDIR /app  
 COPY ../go-pgsql-app/. ./ 
+
 ## writing the command in same line to make sure there is only 1 layer to run both the command in overlay fs
 # RUN go mod tidy 
 # CGO_ENABLED=0 for static linking , GOOS — Target Operating System , GOARCH — Target CPU Architecture
@@ -14,5 +15,11 @@ FROM scratch
 WORKDIR /app
 # i am copying the base exe from golang to our scratch container
 COPY --from=basebuild /app/godocker ./
-
+# a compiled Go binary does not embed the contents of your .env file in it 
+COPY ../go-pgsql-app/.env ./ 
+# i have entrypoint instead of command here: entrypoint ensures that when the container starts, it always runs your Go app — no matter what.
+# CMD ["/app/godocker"] sets the default command, but can be replaced if someone runs:
+# docker run godocker:v1 ls
+# That would run ls, skipping your app.
+ENTRYPOINT ["/app/godocker"] 
 # now we have a scractch image 

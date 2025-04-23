@@ -7,6 +7,6 @@ reference: https://docs.docker.com/reference/dockerfile/
 ```bash
 docker exec -it pgsql psql -U postgres -l
 docker build -f Dockerfile.golang . # without name and tag
-docker build -t godocker:v1 -f Dockerfile.golang . # with name and tag
+docker build -t godocker:v3 -f ./docker_images/Dockerfile.golang .# with name and tag
 
 ```
