@@ -1,0 +1,45 @@
+services:
+  # PostgreSQL service
+  db:
+    image: postgres:15 # here i am directly using the posgres image instead we can seperately build a image and reference it here
+    container_name: pgsql # we can give whatever name we want. if we arent giving any name docker gives random names to it
+    environment:
+      # it expects a map for environment variable so no -
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: docker_test1
+    volumes:
+      #This is a list — an array of strings.
+      - pg_data:/var/lib/postgresql/data # Mount the named volume pg_data into the container at /var/lib/postgresql/data, which is where PostgreSQL stores all of its database files.
+    ports:
+      - "15432:5432" # Exposing port to access it externally <host_port>:<container_port>
+  golang:
+    image: godocker:v8 #  name  and tag of the image that Docker Compose will assign to this service after building it.
+    build:
+      #This tells Docker Compose how to build the image.
+      context: ./
+        # The build context directory — everything inside this directory is sent to the Docker daemon as part of the build.
+        # It’s where relative paths inside the Dockerfile will resolve from.
+      dockerfile: ./docker_images/Dockerfile.golang2 # Specifies the path to the Dockerfile to use instead of the default Dockerfile in the context dir.
+      target: dev
+      #     Specifies the build stage in a multi-stage Dockerfile that you want to stop at.
+      # So if Dockerfile has multiple FROM blocks with AS dev, AS prod, etc., this means you want to build up to the stage labeled dev.
+    container_name: godocker_dev1
+    depends_on:
+      - db
+    # bind mounting the source development directory
+    volumes:
+      - type: bind
+        source: ./go-pgsql-app/
+        target: /app/
+
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  pg_data:
+    # we are telling Docker to mount pg_data at that path, but you're not saying what pg_data is 
+    # The bottom volumes: section is where all named volumes are declared.
+    # It keeps things explicit and organized.
+    # Not required for basic use, but highly recommended for clarity, especially in production setups or complex Compose files.

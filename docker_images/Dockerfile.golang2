@@ -1,0 +1,35 @@
+# we will do a multistage build for golang to reduce the file size.
+# we will do static linking and create exe and move the exe to scratch and then execute so that scratch has only the exe (small size)
+FROM golang:tip-alpine3.21 AS basebuild
+# /app will be our working directory
+WORKDIR /app  
+
+COPY ../go-pgsql-app/. ./ 
+## writing the command in same line to make sure there is only 1 layer to run both the command in overlay fs
+# RUN go mod tidy 
+# CGO_ENABLED=0 for static linking , GOOS — Target Operating System , GOARCH — Target CPU Architecture
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o godocker .
+
+# -----------------------------------------------------------
+FROM basebuild AS dev
+# Install air for hot reload & delve for debugging
+RUN go install github.com/air-verse/air@latest && \
+  go install github.com/go-delve/delve/cmd/dlv@latest
+
+# running it through air package for hot reloading
+CMD ["air", "-c", ".air.toml"]  
+
+# -----------------------------------------------------------
+# for multistage build i use scratch( clean slate)
+FROM scratch AS production
+WORKDIR /app
+# i am copying the base exe from golang to our scratch container
+COPY --from=basebuild /app/godocker ./
+# a compiled Go binary does not embed the contents of your .env file in it 
+COPY ../go-pgsql-app/.env ./ 
+# i have entrypoint instead of command here: entrypoint ensures that when the container starts, it always runs your Go app — no matter what.
+# CMD ["/app/godocker"] sets the default command, but can be replaced if someone runs:
+# docker run godocker:v1 ls
+# That would run ls, skipping your app.
+ENTRYPOINT ["/app/godocker"] 
+# now we have a scractch image 
