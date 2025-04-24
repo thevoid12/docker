@@ -16,6 +16,11 @@ https://github.com/air-verse/air
 go install github.com/air-verse/air@latest
 air init
 ```
+#### to run a debugger
+```
+make compose-up-debug-build
+```
+
 ## TODO:
 - [ ] set up prod as well as for development
 - [ ] as part of development set up 

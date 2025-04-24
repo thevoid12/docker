@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "name": "Docker: Attach to golang",
+      "type": "go",
+      "debugAdapter": "dlv-dap",
+      "mode": "remote",
+      "request": "attach",
+      "port": 4000,
+      "remotePath": "/app",
+      "substitutePath": [
+        {
+          "from": "${workspaceFolder}/go-pgsql-app",
+          "to": "/app"
+        }
+      ]
+    }
+  ]
+}

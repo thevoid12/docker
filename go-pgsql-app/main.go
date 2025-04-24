@@ -44,7 +44,7 @@ func main() {
 		<head><title>Hello</title></head>
 		<body>
 			<h1>{{.Message}}</h1>
-			<p>Today's date from PostgreSQL- hi rahul {{.TodayDate}}</p>
+			<p>Today's date from PostgreSQL: {{.TodayDate}}</p>
 		</body>
 		</html>`))
 	r.SetHTMLTemplate(tmpl)
