@@ -2,7 +2,7 @@ services:
   # PostgreSQL service
   db:
     image: postgres:15 # here i am directly using the posgres image instead we can seperately build a image and reference it here
-    container_name: pgsql # we can give whatever name we want. if we arent giving any name docker gives random names to it
+    container_name: pgsql_dev # we can give whatever name we want. if we arent giving any name docker gives random names to it
     environment:
       # it expects a map for environment variable so no -
       POSTGRES_USER: postgres
