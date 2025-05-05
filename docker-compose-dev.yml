@@ -17,7 +17,7 @@ services:
     image: godocker:v8 #  name  and tag of the image that Docker Compose will assign to this service after building it.
     build:
       #This tells Docker Compose how to build the image.
-      context: ./
+      context: ./ # note it is very important to give it to the parent most directory as it is not able to find the Dockerfile otherwise by going back
         # The build context directory — everything inside this directory is sent to the Docker daemon as part of the build.
         # It’s where relative paths inside the Dockerfile will resolve from.
       dockerfile: ./docker_images/Dockerfile.golang2 # Specifies the path to the Dockerfile to use instead of the default Dockerfile in the context dir.
